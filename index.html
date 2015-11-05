@@ -15,10 +15,10 @@
   </head>
 
   <body>
-    <canvas id = "canvas" width="500" height="500" style="border:1px solid #0f0004">
+    <canvas id = "ctx" width="640" height="480" style="border:1px solid #0f0004">
       </canvas>
-    <script type="text/javascript">
-        var canvas = document.getElementById("canvas");
+    <script src = "game.js">
+        /*var canvas = document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
         var keyDownHandler = document.addEventListener("upKey", keyDownHandler, false);
         var keyUpHandler = document.addEventListener("upKey", keyUpHandler, false);
@@ -123,7 +123,7 @@
                     else if(leftPresed && paddle.x >0)
                             {
                                 paddle.x -=5;
-                            }*/
+                            }
                 }
             }
         
