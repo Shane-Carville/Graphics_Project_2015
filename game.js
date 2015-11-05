@@ -1,3 +1,4 @@
+//vairables and calling the canvas from the index.html file using the is = ctx
 window.onload = function(){
     var canvas = document.getElementById("ctx"),
 ctx = canvas.getContext("2d"),
@@ -8,12 +9,10 @@ pause = false,
 score = 0,
 lives = 3,
 youSuck = false;
-    
-    
+     
 document.addEventListener("keydown", function(e){
     key[e.keyCode] = true;
 });
-
 document.addEventListener("keyup", function(e){
     delete key[e.keyCode];
 });
@@ -24,8 +23,12 @@ document.addEventListener("keyup", function(e){
     DOWN = 40;
     LEFT = 37;
     SPACE = 32;
-    P = 80;
+    //P = 80;
+    //^^^ was used for a pause button that i could not get working kepts stopping and starting without pressing the button.
+   
+    //-----------------------------------------------------
     
+    //object for the paddle
     paddle = {
         x: height/2 - 32,
         y: height - 10,
@@ -35,17 +38,19 @@ document.addEventListener("keyup", function(e){
             }
             
             if(key[LEFT]){
-                this.x -= 4;
+                this.x -= 4;             //the code for making the paddle move with user input
             }
             
             if(this.x <= 0){this.x = 0;}
             if(this.x >= width -64){this.x = width - 64;}
         },
         draw: function(){
-            ctx.fillRect(this.x,this.y, 64,16);
+            ctx.fillRect(this.x,this.y, 64,16); // function for drawing the paddle
         }
     }
+//-------------------------------------------------------------
     
+    //variables and the ball object
     
     ball = {
         x:paddle.x+32,
@@ -60,9 +65,10 @@ document.addEventListener("keyup", function(e){
                 this.y =  paddle.y-16;
                 if(key[SPACE])
                 {
-                    this.holding = false;
+                    this.holding = false; // starting the ball on the paddle
                 }
     }
+            //code for the collision detection on the paddle and walls
         else{
             this.x += this.bx;
             this.y += this.by;
@@ -71,26 +77,27 @@ document.addEventListener("keyup", function(e){
                 this.by = -this.by  ;
             }
             if(this.y<= this.r){this.by = - this.by;}
-            if(this.x<= - this.r || this.x >= width-this.r)
+            if(this.x<= - this.r || this.x >= width-this.r)// moving the ball code
             {
                 this.bx = - this.bx;
             }
             if(this.y > height +this.r)
             {
-                this.holding = true;
+                this.holding = true; // lives going down when you miss the ball
                 lives--;
             }
         }
     },
-        draw:function(){
-                   
-ctx.beginPath();            ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+        draw:function(){     
+            ctx.beginPath();
+            ctx.arc(this.x,this.y,this.r,0,Math.PI*2); // function for drawing the ball
             ctx.stroke();
         }
     
     }
     
-    
+    //------------------------------------------------------------------------
+    //the Blocks object put into two arrays
     
     blocks = [];
     for(var i=0; i<8; i++)
@@ -106,13 +113,14 @@ ctx.beginPath();            ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
                 padding: 10,
                 update: function()
                 {
-                    if(!this.broken)
+                    if(!this.broken)//code for when a block is broken
                     {
                         if(ball.y < this.y +32 + ball.r && ball.x < this.x && ball.x < this.x +64 - ball.r && ball.y > this.y  -ball.r)
+                            //^^ line for collisons between the ball and the blocks 
                         {
                             ball.by = -ball.by;
                             this.broken = true;
-                            score+= 10;
+                            score+= 10; // incrementing the score when a block is broken
                         }
                     }
                 },
@@ -120,11 +128,15 @@ ctx.beginPath();            ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
                 {
                     if(!this.broken)
                     {
-                        ctx.strokeRect(this.x,this.y,64,32);
+                        ctx.strokeRect(this.x,this.y,64,32);//function to draw the blocks
                     }
                 }
-        }        }
+            }       
+        }
     }
+    
+    //-------------------------------------------------------------------------------------------
+    //code for the function update
     
 function update(){
     paddle.update();
@@ -139,15 +151,19 @@ function update(){
     }
     if(lives <= 0)
     {
-        youSuck = true;
+        youSuck = true; // code for the lives and the state of the youSuck variable
     }
     if(youSuck)
     {
         pause = true;
     }
 };
+    
+    //-------------------------------------------------------------------------------
+    //code for the function draw
+    
     function draw(){
-        ctx.fillStyle = "green";
+        ctx.fillStyle = "yellow";
         ctx.fillRect(0,0,width,height);
         ctx.fillStyle = "black";
         
@@ -161,34 +177,36 @@ function update(){
             }
         }
         
-           ctx.fillText("Score: " + score ,16,16);
-    ctx.fillText("Lives: "+ lives ,16,32);
-        if(youSuck)
+        ctx.fillText("Score: " + score ,16,16);//putting the score and lives on the screen in the top corner
+        ctx.fillText("Lives: "+ lives ,16,32);
+        
+        if(lives == 0)
         {
-            ctx.fillText("Congrats YOU LOSE HAHAHAHAH", width/2, height/2);
+            alert("You Lose Sorry Try Again");// javascript alerts for the win and lose states
+            document.location.reload();
         }
-        if(pause && !youSuck)
+        /*if(pause && !youSuck)
         {
             ctx.fillText("Game Paused Good Luck", width/2, height/2);
-        }
+            // code that was used for the pause button that wasn't working
+        }*/
         if(score == 320)
         {
             alert("YOU WIN!!!!");
-            document.location.reload();
+            document.location.reload(); //when the score is 320 alert pops up
         }
     }
+    //---------------------------------------------------------------------
+    //code for the step function
+    
         function step(){
         if(!pause)
         {
             update();
         }
-        if(key[P] && !youSuck)
-        {
-            pause = !pause;   
-        }
         draw();
-        requestAnimationFrame(step);
+        requestAnimationFrame(step);//requests the animation and keeps it running
         }
     
-    step();
+    step();// calling the step function to run the program
 }
